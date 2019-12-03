@@ -4,10 +4,11 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import Home from '@/views/Home.vue'
+import { normalize } from 'path';
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
-import Home from '@/views/Home.vue'
 new Vue({
   router,
   store,

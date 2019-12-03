@@ -10,31 +10,32 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-submenu index="1">
+          <el-submenu index="index" v-for="(menuGroup, index) in menus" :key="index">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>人员机构管理</span>
+              <span>{{menuGroup.menuGroup}}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item @click="goToVue('/UserInfo')">人员信息</el-menu-item>
-              <el-menu-item>角色信息</el-menu-item>
-              <el-menu-item>机构信息</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="1-4">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>菜单权限管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="000">菜单信息</el-menu-item>
-              <el-menu-item index="000">角色权限</el-menu-item>
+              <el-menu-item
+                index="menu.id"
+                @click="goToVue(menu)"
+                v-for="(menu, index) in menuGroup.menuChild"
+                :key="index"
+              >{{menu.name}}</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>
       </el-aside>
       <el-main>
-        <router-view ></router-view>
+        <el-tag
+          v-for="tag in tags"
+          @close="closeTag(tag.name)"
+          class="tag-center"
+          :key="tag.name"
+          closable
+          :type="tag.type"
+        >{{tag.name}}</el-tag>
+        <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -43,16 +44,52 @@
 <script>
 // @ is an alias to /src
 export default {
-  components: {
+  data() {
+    return {
+      tags: [
+       
+      ],
+      menus: [
+        {
+          id: 1,
+          menuGroup: "人员机构管理",
+          menuChild: [
+            { path: "/userInfo", name: "人员信息" },
+            { path: "/role", name: "角色信息" },
+            { path: "/org", name: "机构信息" }
+          ]
+        },
+        {
+          id: 1,
+          menuGroup: "菜单权限管理",
+          menuChild: [
+            { path: "/menu", name: "菜单信息" },
+            { path: "/auth", name: "角色权限" }
+          ]
+        }
+      ]
+    };
   },
+  components: {},
   methods: {
-    goToVue(path) {
-      this.$router.replace(path)
+    goToVue(menu) {
+      if(this.tags.length == 0 || !this.tags.find(v => v.path == menu.path)){
+        this.tags.push(menu)
+      }
+        this.$router.replace(menu.path);
+    },
+    closeTag(menu){
+      console.log(num)
     }
   }
 };
 </script>
 <style >
+.tag-center {
+  margin-bottom: 20px;
+  margin-right: 10px;
+}
+
 html,
 body,
 .el-contatiner,
@@ -68,7 +105,7 @@ body {
 }
 
 .el-header {
-  background-color: #b3c0d1;
+  background-color: #5993df;
   color: #333;
   height: 15%;
   line-height: 60px;
